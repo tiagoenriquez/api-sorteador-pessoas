@@ -85,7 +85,6 @@ class Nome extends Controller
         $maiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for ($i = 0; $i < strlen($maiusculas); $i++) {
             if (preg_match("/".$maiusculas[$i]."/", $sobrenome)) {
-                echo "Cheguei aqui";
                 return true;
             }
         }
