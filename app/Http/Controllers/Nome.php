@@ -12,9 +12,9 @@ class Nome extends Controller
     public function inserir(Request $request) {
         try {
             $primeiroNome = new PrimeiroNome();
-            $primeiroNome->nome = $this->obterPrimeiroNome($request["nome"]);
+            $primeiroNome->nome = $this->obterPrimeiroNome($request->nome);
             $primeiroNome->save();
-            $sobrenomes = $this->obterSobrenomes($request["nome"]);
+            $sobrenomes = $this->obterSobrenomes($request->nome);
             foreach ($sobrenomes as $sobrenomeObtido) {
                 $sobrenome = new Sobrenome();
                 $sobrenome->nome = $sobrenomeObtido;
@@ -29,17 +29,13 @@ class Nome extends Controller
     public function listar(int $numero) {
         try {
             $nomes = [];
-            $indice = 0;
-            while ($indice < $numero) {
+            for ($indice = 0; $indice < $numero; $indice++) {
                 $primeiroNome = $this->obterPrimeiroNomeDoBanco();
                 $numeroSobrenomes = rand(2, 3);
                 $sobrenomes = [];
-                $indiceSobrenome = 0;
-                while ($indiceSobrenome < $numeroSobrenomes) {
+                for ($indiceSobrenome = 0; $indiceSobrenome < $numeroSobrenomes; $indiceSobrenome++) {
                     array_push($sobrenomes, $this->obterSobrenomeDoBanco());
-                    $indiceSobrenome = $indiceSobrenome + 1;
                 }
-                $indice = $indice + 1;
                 $nome = $primeiroNome." ".$sobrenomes[0]." ".$sobrenomes[1];
                 if (count($sobrenomes) == 3) {
                     $nome = $nome." ".$sobrenomes[2];
@@ -54,10 +50,8 @@ class Nome extends Controller
 
     private function obterPrimeiroNome($nomeCompleto) {
         $primeiroNome = "";
-        $indice = 0;
-        while ($nomeCompleto[$indice] != " ") {
+        for ($indice = 0; $nomeCompleto[$indice] != " "; $indice++) {
             $primeiroNome = $primeiroNome."".$nomeCompleto[$indice];
-            $indice = $indice + 1;
         }
         return $primeiroNome;
     }
@@ -65,15 +59,13 @@ class Nome extends Controller
     private function obterSobrenomes($nomeCompleto) {
         $sobrenomes = [];
         $sobrenome = "";
-        $indice = strpos($nomeCompleto, " ") + 1;
-        while ($indice < strlen($nomeCompleto)) {
-            if ($nomeCompleto[$indice] != " " || !preg_match("/\p{Lu}/u", $sobrenome)) {
+        for ($indice = strpos($nomeCompleto, " ") + 1; $indice < strlen($nomeCompleto); $indice++) {
+            if ($nomeCompleto[$indice] != " " || !$this->checarMaiusculas(($sobrenome))) {
                 $sobrenome = $sobrenome."".$nomeCompleto[$indice];
             } else {
                 array_push($sobrenomes, $sobrenome);
                 $sobrenome = "";
             }
-            $indice = $indice + 1;
         }
         array_push($sobrenomes, $sobrenome);
         return $sobrenomes;
@@ -87,5 +79,16 @@ class Nome extends Controller
     private function obterSobrenomeDoBanco() {
         $sobrenome = Sobrenome::all()[rand(1, Sobrenome::count())];
         return $sobrenome->nome;
+    }
+
+    private function checarMaiusculas($sobrenome) {
+        $maiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        for ($i = 0; $i < strlen($maiusculas); $i++) {
+            if (preg_match("/".$maiusculas[$i]."/", $sobrenome)) {
+                echo "Cheguei aqui";
+                return true;
+            }
+        }
+        return false;
     }
 }
