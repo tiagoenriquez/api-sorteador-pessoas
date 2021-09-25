@@ -82,7 +82,7 @@ class NomeController extends Controller
         $primeiroNomeController = new PrimeiroNomeController();
         $primeirosNomes = $primeiroNomeController->index();
         $numeroPrimeirosNomes = count($primeirosNomes);
-        $primeiroNome = $primeirosNomes[rand(1, $numeroPrimeirosNomes)];
+        $primeiroNome = $primeirosNomes[rand(0, $numeroPrimeirosNomes - 1)];
         return $primeiroNome->nome;
     }
 
@@ -91,7 +91,7 @@ class NomeController extends Controller
         $sobrenomeController = new SobrenomeController();
         $sobrenomes = $sobrenomeController->index();
         $numeroSobrenomes = count($sobrenomes);
-        $sobrenome = $sobrenomes[rand(1, $numeroSobrenomes)];
+        $sobrenome = $sobrenomes[rand(0, $numeroSobrenomes - 1)];
         return $sobrenome->nome;
     }
 }
