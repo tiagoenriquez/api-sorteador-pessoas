@@ -84,7 +84,7 @@ class Nome extends Controller
     private function checarMaiusculas($sobrenome) {
         $maiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for ($i = 0; $i < strlen($maiusculas); $i++) {
-            if (preg_match("/".$maiusculas[$i]."/", $sobrenome)) {
+            if (strpos(!$sobrenome, $maiusculas[$i]) === false) {
                 return true;
             }
         }
