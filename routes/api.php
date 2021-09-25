@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +13,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('insercao', 'App\Http\Controllers\Nome@inserir')->name('insercao');
-Route::get('lista/{numero}', 'App\Http\Controllers\Nome@listar')->name('lista');
+Route::post('insercao', 'App\Http\Controllers\NomeController@inserir')->name('insercao');
+Route::get('lista/{numero}', 'App\Http\Controllers\NomeController@listar')->name('lista');

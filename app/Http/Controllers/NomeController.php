@@ -7,29 +7,30 @@ use App\Models\Sobrenome;
 use Illuminate\Http\Request;
 use Exception;
 
-class Nome extends Controller
+class NomeController extends Controller
 {
-    public function inserir(Request $request) {
+    public function inserir(Request $request)
+    {
         try {
+            $primeiroNomeController = new PrimeiroNomeController();
             $primeiroNome = new PrimeiroNome();
             $primeiroNome->nome = $this->obterPrimeiroNome($request->nome);
-            $primeiroNome->save();
+            $primeiroNomeController->store($primeiroNome);
+            $sobrenomeController = new SobrenomeController();
             $sobrenomes = $this->obterSobrenomes($request->nome);
-            var_dump($sobrenomes);
             foreach ($sobrenomes as $sobrenomeObtido) {
-                var_dump($sobrenomeObtido);
                 $sobrenome = new Sobrenome();
                 $sobrenome->nome = $sobrenomeObtido;
-                var_dump($sobrenome);
-                $sobrenome->save();
+                $sobrenomeController->store($sobrenome);
             }
             return response("Nomes salvos com sucesso", 201);
-        } catch(Exception $error) {
-            return response("Erro ao inserir os nomes", 404);
+        } catch (Exception $error) {
+            return response($error->getMessage(), 404);
         }
     }
 
-    public function listar(int $numero) {
+    public function listar(int $numero)
+    {
         try {
             $nomes = [];
             for ($indice = 0; $indice < $numero; $indice++) {
@@ -39,32 +40,34 @@ class Nome extends Controller
                 for ($indiceSobrenome = 0; $indiceSobrenome < $numeroSobrenomes; $indiceSobrenome++) {
                     array_push($sobrenomes, $this->obterSobrenomeDoBanco());
                 }
-                $nome = $primeiroNome." ".$sobrenomes[0]." ".$sobrenomes[1];
+                $nome = $primeiroNome . " " . $sobrenomes[0] . " " . $sobrenomes[1];
                 if (count($sobrenomes) == 3) {
-                    $nome = $nome." ".$sobrenomes[2];
+                    $nome = $nome . " " . $sobrenomes[2];
                 }
                 array_push($nomes, $nome);
             }
             return $nomes;
         } catch (Exception $error) {
-            return response("Erro ao retornar os nomes", 404);
+            return response($error->getMessage(), 404);
         }
     }
 
-    private function obterPrimeiroNome($nomeCompleto) {
+    private function obterPrimeiroNome($nomeCompleto)
+    {
         $primeiroNome = "";
         for ($indice = 0; $nomeCompleto[$indice] != " "; $indice++) {
-            $primeiroNome = $primeiroNome."".$nomeCompleto[$indice];
+            $primeiroNome = $primeiroNome . "" . $nomeCompleto[$indice];
         }
         return $primeiroNome;
     }
 
-    private function obterSobrenomes($nomeCompleto) {
+    private function obterSobrenomes($nomeCompleto)
+    {
         $sobrenomes = [];
         $sobrenome = "";
         for ($indice = strpos($nomeCompleto, " ") + 1; $indice < strlen($nomeCompleto); $indice++) {
-            if ($nomeCompleto[$indice] != " " || !$this->checarMaiusculas(($sobrenome))) {
-                $sobrenome = $sobrenome."".$nomeCompleto[$indice];
+            if ($nomeCompleto[$indice] != " " || !preg_match('/\p{Lu}/u', $sobrenome)) {
+                $sobrenome = $sobrenome . "" . $nomeCompleto[$indice];
             } else {
                 array_push($sobrenomes, $sobrenome);
                 $sobrenome = "";
@@ -74,23 +77,21 @@ class Nome extends Controller
         return $sobrenomes;
     }
 
-    private function obterPrimeiroNomeDoBanco() {
-        $primeiroNome = PrimeiroNome::all()[rand(1, PrimeiroNome::count())];
+    private function obterPrimeiroNomeDoBanco()
+    {
+        $primeiroNomeController = new PrimeiroNomeController();
+        $primeirosNomes = $primeiroNomeController->index();
+        $numeroPrimeirosNomes = count($primeirosNomes);
+        $primeiroNome = $primeirosNomes[rand(1, $numeroPrimeirosNomes)];
         return $primeiroNome->nome;
     }
 
-    private function obterSobrenomeDoBanco() {
-        $sobrenome = Sobrenome::all()[rand(1, Sobrenome::count())];
+    private function obterSobrenomeDoBanco()
+    {
+        $sobrenomeController = new SobrenomeController();
+        $sobrenomes = $sobrenomeController->index();
+        $numeroSobrenomes = count($sobrenomes);
+        $sobrenome = $sobrenomes[rand(1, $numeroSobrenomes)];
         return $sobrenome->nome;
-    }
-
-    private function checarMaiusculas($sobrenome) {
-        $maiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        for ($i = 0; $i < strlen($maiusculas); $i++) {
-            if (strpos(!$sobrenome, $maiusculas[$i]) === false) {
-                return true;
-            }
-        }
-        return false;
     }
 }
