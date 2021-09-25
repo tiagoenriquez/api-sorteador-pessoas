@@ -15,9 +15,12 @@ class Nome extends Controller
             $primeiroNome->nome = $this->obterPrimeiroNome($request->nome);
             $primeiroNome->save();
             $sobrenomes = $this->obterSobrenomes($request->nome);
+            var_dump($sobrenomes);
             foreach ($sobrenomes as $sobrenomeObtido) {
+                var_dump($sobrenomeObtido);
                 $sobrenome = new Sobrenome();
                 $sobrenome->nome = $sobrenomeObtido;
+                var_dump($sobrenome);
                 $sobrenome->save();
             }
             return response("Nomes salvos com sucesso", 201);
