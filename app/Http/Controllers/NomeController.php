@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pessoa;
 use App\Models\PrimeiroNome;
 use App\Models\Sobrenome;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class NomeController extends Controller
     public function listar(int $numero)
     {
         try {
-            $nomes = [];
+            $pessoas = [];
             for ($indice = 0; $indice < $numero; $indice++) {
                 $primeiroNome = $this->obterPrimeiroNomeDoBanco();
                 $numeroSobrenomes = rand(2, 3);
@@ -44,9 +45,10 @@ class NomeController extends Controller
                 if (count($sobrenomes) == 3) {
                     $nome = $nome . " " . $sobrenomes[2];
                 }
-                array_push($nomes, $nome);
+                $pessoa = new Pessoa($nome, $indice);
+                array_push($pessoas, $pessoa);
             }
-            return $nomes;
+            return $pessoas;
         } catch (Exception $error) {
             return response($error->getMessage(), 404);
         }
