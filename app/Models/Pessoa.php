@@ -35,8 +35,8 @@ class Pessoa
 
     private function obterTelefone()
     {
-        $telefone = "";
-        for ($i = 0; $i < 9; $i++) {
+        $telefone = "99";
+        for ($i = 0; $i < 7; $i++) {
             $telefone = $telefone . rand(0, 9);
         }
         return $telefone;
