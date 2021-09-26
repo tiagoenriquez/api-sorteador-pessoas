@@ -1,3 +1,19 @@
+## API Sorteador de Pessoas:
+
+API que permite listagem de informações sorteadas de pessoas. Para a listagem funcionar, é necessário que haja no banco de dados primeiros nomes e sobrenomes de pessoas.
+
+A API contem duas rotas:
+ - /api/insercao:
+   - Recebe um nome inteiro de uma pessoa, salva o primeiro nome na tabela de primeiros nomes e os sobrenomes cada um deles na tabela de sobrenomes e devolve uma resposta de nomes inseridos com sucesso no banco de dados.
+   - verbo: post
+   - argumentos: 
+     - nome: string, body
+ - api/lista/numero:
+   - Recebe um número e devolve um array de objetos com valores sorteados de pessoas. As propriedades dos objetos são: nome, cpf, rg, telefone, usuario, email e senha, todas do tipo string.
+   - verbo: get
+   - argumentos:
+     - numero: int, params
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
